@@ -342,6 +342,13 @@ h1, h2, h3, h4, h5, h6 {
     animation-delay: 4.5s;
 }
 
+.card-5 {
+    top: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation-delay: 6s;
+}
+
 @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-20px); }
@@ -465,6 +472,46 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     margin-top: 1rem;
     opacity: 0.8;
+}
+
+/* Profile Picture Styles */
+.profile-picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 6px solid var(--primary-color);
+    box-shadow: var(--shadow-xl);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+}
+
+/* Add gentle floating animation */
+.profile-img {
+    animation: gentle-float 6s ease-in-out infinite;
+}
+
+@keyframes gentle-float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.profile-img:hover {
+    animation: none;
 }
 
 /* Experience Section */
@@ -933,6 +980,11 @@ h1, h2, h3, h4, h5, h6 {
         text-align: center;
     }
     
+    .profile-img {
+        width: 250px;
+        height: 250px;
+    }
+    
     .timeline::before {
         left: 20px;
     }
@@ -998,5 +1050,10 @@ h1, h2, h3, h4, h5, h6 {
     .hero-stats {
         flex-direction: column;
         gap: 1rem;
+    }
+    
+    .profile-img {
+        width: 200px;
+        height: 200px;
     }
 } 
