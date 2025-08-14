@@ -12,7 +12,7 @@
 2. Click "Add New Service"
 3. Choose your email provider (Gmail, Outlook, etc.)
 4. Follow the setup instructions
-5. **Note down your Service ID** (e.g., `service_abc123`)
+5. **Note down your Service ID** (e.g., `service_7vpeux7`)
 
 ### **Step 3: Create Email Template**
 1. Go to "Email Templates"
@@ -37,21 +37,21 @@ Message:
 Sent from your portfolio contact form
 ```
 
-4. **Note down your Template ID** (e.g., `template_xyz789`)
+4. **Note down your Template ID** (e.g., `template_x279ifr`)
 
 ### **Step 4: Get Your Public Key**
 1. Go to "Account" → "API Keys"
-2. **Copy your Public Key** (e.g., `user_def456`)
+2. **Copy your Public Key** (e.g., `tkj6MNMDakdT_BDLv`)
 
 ### **Step 5: Update Your Code**
 Replace the placeholders in `script.js`:
 
 ```javascript
 // Line 108: Replace YOUR_PUBLIC_KEY
-emailjs.init("user_def456");
+emailjs.init("tkj6MNMDakdT_BDLv");
 
 // Line 140: Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID
-emailjs.send('service_abc123', 'template_xyz789', templateParams)
+emailjs.send('service_7vpeux7', 'template_x279ifr', templateParams)
 ```
 
 ### **Step 6: Test**

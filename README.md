@@ -40,6 +40,7 @@ A stunning, modern portfolio showcasing the impressive career journey of Seraj A
 - **HTML5** - Semantic markup
 - **CSS3** - Modern styling with CSS Grid, Flexbox, and custom properties
 - **JavaScript (ES6+)** - Interactive functionality and animations
+- **EmailJS** - Contact form email service
 - **AOS (Animate On Scroll)** - Scroll-triggered animations
 - **Font Awesome** - Beautiful icons
 - **Google Fonts** - Inter typography
@@ -58,12 +59,27 @@ The portfolio is fully responsive and optimized for:
 2. **Open `index.html`** in your web browser
 3. **Enjoy** the beautiful, interactive experience!
 
+### Quick Start (No Server Required!)
+```bash
+# Option 1: Direct open
+# Just double-click index.html
+
+# Option 2: Simple HTTP server
+python -m http.server 8000
+# Then open: http://localhost:8000
+
+# Option 3: VS Code Live Server
+# Install "Live Server" extension and right-click index.html
+```
+
 ### File Structure
 ```
 portfolio/
 ├── index.html          # Main HTML file
 ├── styles.css          # CSS styles and animations
 ├── script.js           # JavaScript functionality
+├── Profile_picture.jpg # Profile image
+├── EMAIL_SETUP.md      # EmailJS configuration guide
 └── README.md           # This file
 ```
 

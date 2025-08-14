@@ -167,7 +167,10 @@ if (heroSection) {
     heroObserver.observe(heroSection);
 }
 
-// Contact form handling with backend API
+// Initialize EmailJS
+emailjs.init("tkj6MNMDakdT_BDLv");
+
+// Contact form handling with EmailJS
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
@@ -197,32 +200,28 @@ if (contactForm) {
         submitBtn.disabled = true;
         
         try {
-            // Send to backend API
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    subject,
-                    message
-                })
-            });
+            // Prepare template parameters for EmailJS
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                subject: subject || 'Portfolio Contact',
+                message: message,
+                to_name: 'Seraj'
+            };
             
-            const data = await response.json();
+            // Send email using EmailJS
+            const response = await emailjs.send('service_7vpeux7', 'template_x279ifr', templateParams);
             
-            if (data.success) {
-                showNotification(data.message, 'success');
+            if (response.status === 200) {
+                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
                 contactForm.reset();
             } else {
-                showNotification(data.message || 'Failed to send message. Please try again.', 'error');
+                showNotification('Failed to send message. Please try again.', 'error');
             }
             
         } catch (error) {
             console.error('Error sending message:', error);
-            showNotification('Network error. Please check your connection and try again.', 'error');
+            showNotification('Failed to send message. Please try again later.', 'error');
         } finally {
             // Reset button state
             submitBtn.textContent = originalText;
