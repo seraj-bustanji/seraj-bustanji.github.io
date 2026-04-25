@@ -285,14 +285,25 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // ----- EmailJS contact form -----
+const EMAILJS_PUBLIC_KEY = 'tkj6MNMDakdT_BDLv';
+const EMAILJS_SERVICE_ID = 'service_7vpeux7';
+const EMAILJS_TEMPLATE_ID = 'template_x279ifr';
+
 if (typeof emailjs !== 'undefined') {
-    emailjs.init("tkj6MNMDakdT_BDLv");
+    // EmailJS v4 init signature
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+} else {
+    console.warn('EmailJS SDK failed to load. Check the script tag and your network/ad-blocker.');
 }
 
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (typeof emailjs === 'undefined') {
+            return showNotification('Email service unavailable. Disable any ad-blocker and reload.', 'error');
+        }
 
         const name = document.getElementById('userName').value.trim();
         const email = document.getElementById('userEmail').value.trim();
@@ -315,20 +326,33 @@ if (contactForm) {
             const params = {
                 from_name: name,
                 from_email: email,
+                reply_to: email,
                 subject: subject || 'Portfolio Contact',
                 message,
                 to_name: 'Seraj'
             };
-            const res = await emailjs.send('service_7vpeux7', 'template_x279ifr', params);
-            if (res.status === 200) {
+
+            const res = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                params,
+                { publicKey: EMAILJS_PUBLIC_KEY }
+            );
+
+            if (res && res.status === 200) {
                 showNotification("Message sent. I'll get back to you soon.", 'success');
                 contactForm.reset();
             } else {
+                console.error('EmailJS unexpected response:', res);
                 showNotification('Failed to send. Please try again.', 'error');
             }
         } catch (err) {
-            console.error(err);
-            showNotification('Failed to send. Please try again later.', 'error');
+            console.error('EmailJS error:', err);
+            const detail = (err && (err.text || err.message)) || '';
+            const friendly = /allowed origin|cors|api/i.test(detail)
+                ? 'Email service blocked this domain. Add it under EmailJS → Account → Security → Allowed Origins.'
+                : `Failed to send. ${detail || 'Please try again later.'}`;
+            showNotification(friendly, 'error');
         } finally {
             submitBtn.innerHTML = originalHTML;
             submitBtn.disabled = false;
