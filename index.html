@@ -3,697 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Seraj Albustanji — Engineering Manager, Data Scientist, and builder of large-scale CRM, ERP, and AI systems.">
-    <meta name="theme-color" content="#0b0b10">
     <title>Seraj Albustanji — Engineering Manager · Data Scientist</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Seraj Albustanji — Engineering Manager at Black Oasis leading 20+ engineers across CRM, ERP and central-management platforms. Explore an interactive map of a career that went from data scientist to running the room in three years.">
+    <meta name="author" content="Seraj Albustanji">
+    <meta name="theme-color" content="#05060a">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Seraj Albustanji — Engineering Manager · Data Scientist">
+    <meta property="og:description" content="An interactive 3D map of a career: from data scientist to engineering manager in three years. Leading 20+ engineers across CRM, ERP and central-management platforms.">
+    <meta property="og:image" content="Profile_picture.jpg">
+    <meta property="og:url" content="https://seraj-bustanji.github.io/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2305060a'/><circle cx='50' cy='50' r='9' fill='%235eead4'/><circle cx='50' cy='50' r='26' fill='none' stroke='%235eead4' stroke-width='2' opacity='.5'/></svg>">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
 </head>
 <body>
 
-    <!-- Page Loader -->
-    <div class="loader" id="loader">
-        <div class="loader-inner">
-            <span class="loader-mark">SA</span>
-            <span class="loader-bar"><span class="loader-bar-fill"></span></span>
+    <!-- ===================== WEBGL CANVAS ===================== -->
+    <canvas id="scene" aria-hidden="true"></canvas>
+
+    <!-- ===================== INTRO / LOADER ===================== -->
+    <div class="intro" id="intro">
+        <div class="intro-inner">
+            <span class="intro-eyebrow">Interactive portfolio</span>
+            <h1 class="intro-name">Seraj Albustanji</h1>
+            <p class="intro-role">Engineering Manager<span class="d">·</span>Data Scientist<span class="d">·</span>Builder</p>
+            <p class="intro-desc">
+                This is a living map of my career — every system, role and skill as a node
+                you can fly through. Or skip it and just read the facts.
+            </p>
+            <div class="intro-load" id="introLoad">
+                <span class="intro-bar"><span class="intro-bar-fill" id="introBar"></span></span>
+                <span class="intro-load-txt" id="introLoadTxt">Assembling the universe…</span>
+            </div>
+            <div class="intro-actions" id="introActions" hidden>
+                <button class="btn btn-primary" id="enterBtn">
+                    <span>Enter the universe</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn btn-ghost" id="readBtn">
+                    <span>Read it as a page</span>
+                </button>
+            </div>
+            <p class="intro-hint">Best on desktop · works everywhere</p>
         </div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div class="cursor-dot" id="cursorDot"></div>
-    <div class="cursor-ring" id="cursorRing"></div>
+    <!-- ===================== HUD ===================== -->
+    <header class="hud hud-top" id="hud" hidden>
+        <a href="#" class="hud-brand" id="brandHome">
+            <span class="hud-mark"></span>
+            <span class="hud-brand-txt"><b>Seraj Albustanji</b><i>Engineering Manager</i></span>
+        </a>
+        <nav class="hud-nav" aria-label="Map">
+            <button data-node="about" class="hud-link">About</button>
+            <button data-node="journey" class="hud-link">Journey</button>
+            <button data-node="skills" class="hud-link">Skills</button>
+            <button data-node="work" class="hud-link">Work</button>
+            <button data-node="contact" class="hud-link">Contact</button>
+        </nav>
+        <button class="hud-read" id="toReadable"><i class="fas fa-align-left"></i><span>Readable view</span></button>
+    </header>
 
-    <!-- Scroll Progress -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-
-    <!-- Background Aurora -->
-    <div class="aurora">
-        <span class="blob blob-1"></span>
-        <span class="blob blob-2"></span>
-        <span class="blob blob-3"></span>
-        <div class="grid-overlay"></div>
-        <div class="noise"></div>
+    <div class="hud hud-hint" id="hudHint" hidden>
+        <span><i class="fas fa-arrows-up-down-left-right"></i> Drag to orbit</span>
+        <span><i class="fas fa-magnifying-glass"></i> Scroll to zoom</span>
+        <span><i class="fas fa-hand-pointer"></i> Click a node</span>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="nav-logo">
-                <span class="logo-mark">SA</span>
-                <span class="logo-name">Seraj Albustanji</span>
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link" data-section="home"><span class="nav-num">01</span>Home</a></li>
-                <li><a href="#about" class="nav-link" data-section="about"><span class="nav-num">02</span>About</a></li>
-                <li><a href="#experience" class="nav-link" data-section="experience"><span class="nav-num">03</span>Journey</a></li>
-                <li><a href="#skills" class="nav-link" data-section="skills"><span class="nav-num">04</span>Skills</a></li>
-                <li><a href="#projects" class="nav-link" data-section="projects"><span class="nav-num">05</span>Work</a></li>
-                <li><a href="#contact" class="nav-link" data-section="contact"><span class="nav-num">06</span>Contact</a></li>
-            </ul>
-            <a href="#contact" class="nav-cta">
-                <span>Let's talk</span>
-                <i class="fas fa-arrow-right"></i>
-            </a>
-            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <canvas id="particleCanvas" class="particle-canvas"></canvas>
-
-        <div class="hero-container">
-            <div class="hero-meta">
-                <span class="status-dot"></span>
-                <span>Available for select opportunities</span>
-                <span class="meta-divider"></span>
-                <span>Amman, Jordan</span>
-            </div>
-
-            <h1 class="hero-title">
-                <span class="line"><span class="reveal">Engineering</span></span>
-                <span class="line"><span class="reveal">leader who turns</span></span>
-                <span class="line"><span class="reveal"><em>complex systems</em></span></span>
-                <span class="line"><span class="reveal">into business velocity.</span></span>
-            </h1>
-
-            <div class="hero-bottom">
-                <div class="hero-intro">
-                    <span class="hero-tag">// About</span>
-                    <p class="hero-description">
-                        I'm <strong>Seraj Albustanji</strong> — Engineering Manager at Black Oasis,
-                        leading 20+ engineers across CRM, ERP, and central management platforms.
-                        I started in data science at Orange and built my way into running the room.
-                    </p>
-                </div>
-
-                <div class="hero-actions">
-                    <a href="#projects" class="btn btn-primary magnetic">
-                        <span>See my work</span>
-                        <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
-                    </a>
-                    <a href="#contact" class="btn btn-ghost magnetic">
-                        <span>Get in touch</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number" data-count="20">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Engineers led</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-count="4">0</span>
-                    <span class="stat-label">Promotions in 3 yrs</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-count="800">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Beat for Champion of the Quarter</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number" data-count="50">0</span><span class="stat-suffix">K+</span>
-                    <span class="stat-label">Users on systems I lead</span>
-                </div>
-            </div>
-
-            <a href="#about" class="scroll-indicator">
-                <span class="scroll-text">Scroll</span>
-                <span class="scroll-line"></span>
-            </a>
-        </div>
-    </section>
-
-    <!-- Marquee -->
-    <div class="marquee" aria-hidden="true">
-        <div class="marquee-track">
-            <span>Python</span><span class="dot">●</span>
-            <span>Node.js</span><span class="dot">●</span>
-            <span>React</span><span class="dot">●</span>
-            <span>SQL</span><span class="dot">●</span>
-            <span>Snowflake</span><span class="dot">●</span>
-            <span>Google Cloud</span><span class="dot">●</span>
-            <span>Machine Learning</span><span class="dot">●</span>
-            <span>CRM / ERP</span><span class="dot">●</span>
-            <span>System Design</span><span class="dot">●</span>
-            <span>Data Pipelines</span><span class="dot">●</span>
-            <span>Leadership</span><span class="dot">●</span>
-            <!-- duplicate for seamless loop -->
-            <span>Python</span><span class="dot">●</span>
-            <span>Node.js</span><span class="dot">●</span>
-            <span>React</span><span class="dot">●</span>
-            <span>SQL</span><span class="dot">●</span>
-            <span>Snowflake</span><span class="dot">●</span>
-            <span>Google Cloud</span><span class="dot">●</span>
-            <span>Machine Learning</span><span class="dot">●</span>
-            <span>CRM / ERP</span><span class="dot">●</span>
-            <span>System Design</span><span class="dot">●</span>
-            <span>Data Pipelines</span><span class="dot">●</span>
-            <span>Leadership</span><span class="dot">●</span>
-        </div>
+    <div class="cluster-hud" id="clusterHud" hidden>
+        <button class="cluster-back" id="backBtn"><i class="fas fa-arrow-left"></i> Universe</button>
+        <span class="cluster-title" id="clusterTitle"></span>
+        <span class="cluster-note">Pick a node</span>
     </div>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <header class="section-head">
-                <span class="section-eyebrow">02 — About</span>
-                <h2 class="section-title">A data scientist who learned to <em>lead</em>.</h2>
-            </header>
+    <!-- ===================== FLYOUT PANEL ===================== -->
+    <div class="panel-scrim" id="panelScrim" hidden></div>
+    <aside class="panel" id="panel" hidden aria-live="polite">
+        <button class="panel-close" id="panelClose" aria-label="Close"><i class="fas fa-xmark"></i></button>
+        <div class="panel-body" id="panelBody"></div>
+    </aside>
 
-            <div class="about-grid">
-                <div class="about-portrait">
-                    <div class="portrait-frame">
-                        <img src="Profile_picture.jpg" alt="Seraj Albustanji" class="portrait-img">
-                        <div class="portrait-glow"></div>
-                    </div>
-                    <div class="portrait-badge">
-                        <i class="fas fa-trophy"></i>
-                        <div>
-                            <strong>Champion of the Quarter</strong>
-                            <span>Picked from 800+ employees</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="about-content">
-                    <p class="about-lede">
-                        I'm a 23-year-old engineering manager based in Amman. I started as a data
-                        scientist at Orange, became their AI Engineering Lead, then moved to
-                        Black Oasis where I've been promoted four times in three years.
-                    </p>
-                    <p>
-                        Today I run engineering for a portfolio of CRM, ERP, and central
-                        management systems — the kind of platforms where one bad release stalls
-                        an entire business. My job is to make sure that doesn't happen, and to
-                        keep the team fast while we do it.
-                    </p>
-                    <p>
-                        I'm known as the hardest worker in the room. I care about clarity,
-                        ownership, and shipping things people actually use.
-                    </p>
-
-                    <ul class="about-facts">
-                        <li>
-                            <i class="fas fa-graduation-cap"></i>
-                            <div>
-                                <span class="fact-label">Education</span>
-                                <span class="fact-value">B.Sc. Data Science · Al-Balqa Applied University</span>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-briefcase"></i>
-                            <div>
-                                <span class="fact-label">Current</span>
-                                <span class="fact-value">Engineering Manager · Black Oasis</span>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-globe"></i>
-                            <div>
-                                <span class="fact-label">Languages</span>
-                                <span class="fact-value">Arabic (native) · English (fluent)</span>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-bolt"></i>
-                            <div>
-                                <span class="fact-label">Focus</span>
-                                <span class="fact-value">Enterprise systems · AI · Org design</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+    <!-- ===================== READABLE VIEW (also SEO + fallback) ===================== -->
+    <div class="readable" id="readable">
+        <nav class="r-nav">
+            <a href="#r-home" class="r-brand"><span class="r-mark">SA</span> Seraj Albustanji</a>
+            <div class="r-links">
+                <a href="#r-about">About</a>
+                <a href="#r-journey">Journey</a>
+                <a href="#r-skills">Skills</a>
+                <a href="#r-work">Work</a>
+                <a href="#r-contact">Contact</a>
             </div>
-        </div>
-    </section>
+            <button class="r-toUniverse" id="toUniverse"><i class="fas fa-atom"></i> Universe</button>
+        </nav>
 
-    <!-- Experience Section -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <header class="section-head">
-                <span class="section-eyebrow">03 — Career journey</span>
-                <h2 class="section-title">From <em>data scientist</em> to <em>engineering manager</em> in 3 years.</h2>
-            </header>
-
-            <ol class="timeline">
-                <li class="timeline-item current">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-period"><i class="fas fa-circle-dot"></i> Dec 2025 — Present</div>
-                        <h3>Engineering Manager</h3>
-                        <span class="timeline-company">Black Oasis</span>
-                        <p>
-                            Own the engineering function for CRM, ERP, and central management
-                            systems. Hiring, career development, and performance for 20+ engineers.
-                            Setting technical and delivery strategy and aligning teams with business goals.
-                        </p>
-                        <div class="tag-row">
-                            <span class="tag">People management</span>
-                            <span class="tag">Hiring</span>
-                            <span class="tag">Tech strategy</span>
-                            <span class="tag">Org design</span>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-period">Sep 2024 — Dec 2025</div>
-                        <h3>Engineering Lead</h3>
-                        <span class="timeline-company">Black Oasis</span>
-                        <p>
-                            Led development and maintenance of large-scale CRM, ERP, and central
-                            management systems. Drove technical excellence and scalable enterprise
-                            delivery across 20+ engineers.
-                        </p>
-                        <div class="tag-row">
-                            <span class="tag">CRM / ERP</span>
-                            <span class="tag">Enterprise architecture</span>
-                            <span class="tag">Team leadership</span>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-period">Sep 2024</div>
-                        <h3>Senior Software Engineer</h3>
-                        <span class="timeline-company">Black Oasis</span>
-                        <p>
-                            Promoted into senior IC scope. Owned scalable architecture, database
-                            design, data pipelines, and cloud infrastructure.
-                        </p>
-                        <div class="tag-row">
-                            <span class="tag">System design</span>
-                            <span class="tag">Databases</span>
-                            <span class="tag">Cloud</span>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-period">May 2024</div>
-                        <h3>Software Engineer</h3>
-                        <span class="timeline-company">Black Oasis</span>
-                        <p>
-                            Full-stack engineering on Node.js, React, MySQL, and Snowflake.
-                            Shipped data-driven product features end to end.
-                        </p>
-                        <div class="tag-row">
-                            <span class="tag">React</span>
-                            <span class="tag">Node.js</span>
-                            <span class="tag">MySQL</span>
-                            <span class="tag">Snowflake</span>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-period">Feb 2024</div>
-                        <h3>AI Engineering Lead</h3>
-                        <span class="timeline-company">Orange Innovation Hub</span>
-                        <p>
-                            Led AI initiatives and ML projects. Managed a small team and
-                            shipped predictive models that fed product and business decisions.
-                        </p>
-                        <div class="tag-row">
-                            <span class="tag">AI / ML</span>
-                            <span class="tag">Predictive modeling</span>
-                            <span class="tag">Team leadership</span>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-period">Dec 2023 — start</div>
-                        <h3>Data Scientist</h3>
-                        <span class="timeline-company">Orange Innovation Hub</span>
-                        <p>
-                            Where it all started. Analyzed complex datasets, built predictive
-                            models, and delivered insights that influenced business decisions.
-                        </p>
-                        <div class="tag-row">
-                            <span class="tag">Data analysis</span>
-                            <span class="tag">Machine learning</span>
-                            <span class="tag">BI</span>
-                        </div>
-                    </div>
-                </li>
-            </ol>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <header class="section-head">
-                <span class="section-eyebrow">04 — Skills</span>
-                <h2 class="section-title">Tools I reach for to <em>ship</em>.</h2>
-            </header>
-
-            <div class="skills-grid">
-                <article class="skill-card">
-                    <div class="skill-head">
-                        <i class="fas fa-code"></i>
-                        <h3>Engineering</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Python</span><span class="skill-meter"><span style="--w:95%"></span></span></li>
-                        <li><span>Node.js</span><span class="skill-meter"><span style="--w:90%"></span></span></li>
-                        <li><span>SQL</span><span class="skill-meter"><span style="--w:92%"></span></span></li>
-                        <li><span>React.js</span><span class="skill-meter"><span style="--w:85%"></span></span></li>
-                        <li><span>System architecture</span><span class="skill-meter"><span style="--w:88%"></span></span></li>
-                    </ul>
-                </article>
-
-                <article class="skill-card">
-                    <div class="skill-head">
-                        <i class="fas fa-cogs"></i>
-                        <h3>Enterprise systems</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>CRM platforms</span><span class="skill-meter"><span style="--w:95%"></span></span></li>
-                        <li><span>ERP platforms</span><span class="skill-meter"><span style="--w:92%"></span></span></li>
-                        <li><span>Central management</span><span class="skill-meter"><span style="--w:90%"></span></span></li>
-                        <li><span>API design</span><span class="skill-meter"><span style="--w:88%"></span></span></li>
-                    </ul>
-                </article>
-
-                <article class="skill-card">
-                    <div class="skill-head">
-                        <i class="fas fa-database"></i>
-                        <h3>Data & AI</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Data analysis</span><span class="skill-meter"><span style="--w:95%"></span></span></li>
-                        <li><span>Machine learning</span><span class="skill-meter"><span style="--w:85%"></span></span></li>
-                        <li><span>ETL & pipelines</span><span class="skill-meter"><span style="--w:88%"></span></span></li>
-                        <li><span>Database design</span><span class="skill-meter"><span style="--w:95%"></span></span></li>
-                        <li><span>Snowflake</span><span class="skill-meter"><span style="--w:80%"></span></span></li>
-                    </ul>
-                </article>
-
-                <article class="skill-card">
-                    <div class="skill-head">
-                        <i class="fas fa-cloud"></i>
-                        <h3>Cloud & infra</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Google Cloud Platform</span><span class="skill-meter"><span style="--w:92%"></span></span></li>
-                        <li><span>Infrastructure design</span><span class="skill-meter"><span style="--w:88%"></span></span></li>
-                        <li><span>Deployment & CI/CD</span><span class="skill-meter"><span style="--w:90%"></span></span></li>
-                    </ul>
-                </article>
-
-                <article class="skill-card">
-                    <div class="skill-head">
-                        <i class="fas fa-users"></i>
-                        <h3>Leadership</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Team leadership</span><span class="skill-meter"><span style="--w:95%"></span></span></li>
-                        <li><span>Hiring & development</span><span class="skill-meter"><span style="--w:90%"></span></span></li>
-                        <li><span>Project management</span><span class="skill-meter"><span style="--w:95%"></span></span></li>
-                        <li><span>Strategic planning</span><span class="skill-meter"><span style="--w:88%"></span></span></li>
-                    </ul>
-                </article>
-
-                <article class="skill-card">
-                    <div class="skill-head">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Delivery</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Roadmap & prioritization</span><span class="skill-meter"><span style="--w:92%"></span></span></li>
-                        <li><span>Cross-team alignment</span><span class="skill-meter"><span style="--w:90%"></span></span></li>
-                        <li><span>Stakeholder management</span><span class="skill-meter"><span style="--w:88%"></span></span></li>
-                    </ul>
-                </article>
+        <header class="r-hero" id="r-home">
+            <span class="eyebrow">Engineering Manager · Data Scientist</span>
+            <h1>Engineering leader who turns <em>complex systems</em> into business velocity.</h1>
+            <p class="r-lede">
+                I'm <strong>Seraj Albustanji</strong> — Engineering Manager at <strong>Black Oasis</strong>,
+                leading 20+ engineers across CRM, ERP and central-management platforms. I started in
+                data science at <strong>Orange</strong> and built my way into running the room.
+            </p>
+            <div class="r-cta">
+                <a href="#r-work" class="btn btn-primary"><span>See the work</span><i class="fas fa-arrow-down"></i></a>
+                <a href="#r-contact" class="btn btn-ghost"><span>Get in touch</span></a>
             </div>
-        </div>
-    </section>
+            <dl class="r-stats">
+                <div><dt>20+</dt><dd>Engineers led</dd></div>
+                <div><dt>4</dt><dd>Promotions in 3 years</dd></div>
+                <div><dt>50K+</dt><dd>Users on systems I lead</dd></div>
+                <div><dt>800+</dt><dd>Beaten for Champion of the Quarter</dd></div>
+            </dl>
+        </header>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <header class="section-head">
-                <span class="section-eyebrow">05 — Selected work</span>
-                <h2 class="section-title">Systems behind the <em>day-to-day</em> of the business.</h2>
-            </header>
-
-            <div class="projects-grid">
-                <article class="project-card project-feature">
-                    <div class="project-side">
-                        <span class="project-num">01</span>
-                        <span class="project-year">2024 — present</span>
+        <!-- content sections are cloned into the 3D panel; keep them self-contained -->
+        <section class="r-section" id="r-about" data-title="About" data-sub="Who I am">
+            <div class="sec-inner">
+                <div class="about-grid">
+                    <div class="about-portrait">
+                        <img src="Profile_picture.jpg" alt="Portrait of Seraj Albustanji">
+                        <div class="award"><i class="fas fa-trophy"></i><div><strong>Champion of the Quarter</strong><span>Chosen from 800+ employees</span></div></div>
                     </div>
-                    <div class="project-body">
-                        <div class="project-icon"><i class="fas fa-cogs"></i></div>
-                        <h3>Enterprise CRM Platform</h3>
-                        <p>
-                            Led the build of a CRM serving 50,000+ users — owning customer
-                            relationships, sales pipelines, and cross-department workflows on
-                            a single source of truth.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">Node.js</span>
-                            <span class="tech-tag">PostgreSQL</span>
-                            <span class="tech-tag">GCP</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-side">
-                        <span class="project-num">02</span>
-                        <span class="project-year">2024</span>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-icon"><i class="fas fa-industry"></i></div>
-                        <h3>Integrated ERP</h3>
-                        <p>
-                            Designed and implemented an ERP unifying finance, inventory, HR,
-                            and operations. Lifted business efficiency ~60%.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">React</span>
-                            <span class="tech-tag">MySQL</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-side">
-                        <span class="project-num">03</span>
-                        <span class="project-year">2024</span>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-icon"><i class="fas fa-network-wired"></i></div>
-                        <h3>Central Management System</h3>
-                        <p>
-                            Built a centralized platform that orchestrates business operations
-                            with real-time monitoring, reporting, and control across departments.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Node.js</span>
-                            <span class="tech-tag">MongoDB</span>
-                            <span class="tech-tag">Redis</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-side">
-                        <span class="project-num">04</span>
-                        <span class="project-year">2024</span>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-icon"><i class="fas fa-mobile-alt"></i></div>
-                        <h3>Enterprise Mobile App</h3>
-                        <p>
-                            Cross-platform mobile app for 10,000+ users with real-time sync
-                            and offline-first behavior.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">React Native</span>
-                            <span class="tech-tag">Node.js</span>
-                            <span class="tech-tag">MongoDB</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-side">
-                        <span class="project-num">05</span>
-                        <span class="project-year">2023</span>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-icon"><i class="fas fa-brain"></i></div>
-                        <h3>AI Predictive Models @ Orange</h3>
-                        <p>
-                            Built predictive models that fed product and business decisions
-                            inside Orange's Innovation Hub.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">scikit-learn</span>
-                            <span class="tech-tag">Pandas</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-side">
-                        <span class="project-num">06</span>
-                        <span class="project-year">2024</span>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-icon"><i class="fas fa-cloud"></i></div>
-                        <h3>Cloud Migration to GCP</h3>
-                        <p>
-                            Orchestrated migration of legacy systems to GCP. Performance up
-                            ~3×, cost down ~40%.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">GCP</span>
-                            <span class="tech-tag">Kubernetes</span>
-                            <span class="tech-tag">Terraform</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <header class="section-head">
-                <span class="section-eyebrow">06 — Contact</span>
-                <h2 class="section-title">Have a problem worth <em>solving</em>?</h2>
-            </header>
-
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <p class="contact-lede">
-                        I read everything that lands in my inbox. Whether it's a role,
-                        a partnership, or a hard system problem — write to me.
-                    </p>
-
-                    <ul class="contact-list">
-                        <li>
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <span>Email</span>
-                                <a href="mailto:serajbustanji02@gmail.com">serajbustanji02@gmail.com</a>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <span>Based in</span>
-                                <p>Amman, Jordan · open to remote</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fas fa-briefcase"></i>
-                            <div>
-                                <span>Currently</span>
-                                <p>Engineering Manager · Black Oasis</p>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <div class="social-links">
-                        <a href="#" class="social-link magnetic" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-link magnetic" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link magnetic" aria-label="X / Twitter"><i class="fab fa-x-twitter"></i></a>
-                        <a href="mailto:serajbustanji02@gmail.com" class="social-link magnetic" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
-
-                <form id="contactForm" class="contact-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="userName">Your name</label>
-                            <input type="text" id="userName" placeholder="Jane Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="userEmail">Email</label>
-                            <input type="email" id="userEmail" placeholder="jane@company.com" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="userSubject">Subject</label>
-                        <input type="text" id="userSubject" placeholder="What's this about?">
-                    </div>
-                    <div class="form-group">
-                        <label for="userMessage">Message</label>
-                        <textarea id="userMessage" placeholder="Tell me what you're working on..." rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary magnetic btn-block">
-                        <span>Send message</span>
-                        <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <span class="footer-mark">SA</span>
-                    <p>Engineering manager, data scientist, and builder of systems that the business runs on.</p>
-                </div>
-                <div class="footer-cols">
-                    <div>
-                        <span class="footer-label">Navigate</span>
-                        <a href="#home">Home</a>
-                        <a href="#about">About</a>
-                        <a href="#experience">Journey</a>
-                        <a href="#projects">Work</a>
-                    </div>
-                    <div>
-                        <span class="footer-label">Elsewhere</span>
-                        <a href="#" target="_blank" rel="noopener">LinkedIn</a>
-                        <a href="#" target="_blank" rel="noopener">GitHub</a>
-                        <a href="#" target="_blank" rel="noopener">X / Twitter</a>
-                    </div>
-                    <div>
-                        <span class="footer-label">Direct</span>
-                        <a href="mailto:serajbustanji02@gmail.com">serajbustanji02@gmail.com</a>
-                        <a href="#contact">Contact form</a>
+                    <div class="about-copy">
+                        <p class="lede">A 23-year-old engineering manager based in Amman. I started as a data scientist at Orange, became their AI Engineering Lead, then moved to Black Oasis — where I've been promoted four times in three years.</p>
+                        <p>Today I run engineering for a portfolio of CRM, ERP and central-management systems — the kind of platforms where one bad release stalls an entire business. My job is to make sure that doesn't happen, and to keep the team fast while we do it.</p>
+                        <p>I'm known as the hardest worker in the room. I care about clarity, ownership, and shipping things people actually use.</p>
+                        <ul class="facts">
+                            <li><i class="fas fa-graduation-cap"></i><div><span>Education</span>B.Sc. Data Science · Al-Balqa Applied University</div></li>
+                            <li><i class="fas fa-briefcase"></i><div><span>Currently</span>Engineering Manager · Black Oasis</div></li>
+                            <li><i class="fas fa-language"></i><div><span>Languages</span>Arabic (native) · English (fluent)</div></li>
+                            <li><i class="fas fa-bolt"></i><div><span>Focus</span>Enterprise systems · AI · Org design</div></li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <span>© <span id="footerYear"></span> Seraj Albustanji. Built from scratch.</span>
-                <a href="#home" class="back-top">Back to top <i class="fas fa-arrow-up"></i></a>
-            </div>
-        </div>
-    </footer>
+        </section>
 
-    <!-- EmailJS v4 -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="script.js"></script>
+        <section class="r-section" id="r-journey" data-title="Journey" data-sub="Six roles · four promotions · three years">
+            <div class="sec-inner">
+                <ol class="timeline">
+                    <li class="tl is-current"><div class="tl-card"><div class="tl-top"><span class="tl-date"><span class="live"></span> Dec 2025 — Present</span><span class="tl-badge">Current</span></div><h3>Engineering Manager</h3><span class="tl-co">Black Oasis</span><p>Own the engineering function for CRM, ERP and central-management systems. Hiring, career development and performance for 20+ engineers. Setting technical and delivery strategy.</p><div class="tags"><span>People management</span><span>Hiring</span><span>Tech strategy</span><span>Org design</span></div></div></li>
+                    <li class="tl is-promo"><div class="tl-card"><div class="tl-top"><span class="tl-date">Sep 2024 — Dec 2025</span><span class="tl-badge promo"><i class="fas fa-arrow-trend-up"></i> Promotion</span></div><h3>Engineering Lead</h3><span class="tl-co">Black Oasis</span><p>Led development and maintenance of large-scale CRM, ERP and central-management systems across 20+ engineers.</p><div class="tags"><span>CRM / ERP</span><span>Enterprise architecture</span><span>Team leadership</span></div></div></li>
+                    <li class="tl is-promo"><div class="tl-card"><div class="tl-top"><span class="tl-date">Sep 2024</span><span class="tl-badge promo"><i class="fas fa-arrow-trend-up"></i> Promotion</span></div><h3>Senior Software Engineer</h3><span class="tl-co">Black Oasis</span><p>Owned scalable architecture, database design, data pipelines and cloud infrastructure.</p><div class="tags"><span>System design</span><span>Databases</span><span>Cloud</span></div></div></li>
+                    <li class="tl"><div class="tl-card"><div class="tl-top"><span class="tl-date">May 2024</span><span class="tl-badge">Joined Black Oasis</span></div><h3>Software Engineer</h3><span class="tl-co">Black Oasis</span><p>Full-stack engineering on Node.js, React, MySQL and Snowflake. Shipped data-driven features end to end.</p><div class="tags"><span>React</span><span>Node.js</span><span>MySQL</span><span>Snowflake</span></div></div></li>
+                    <li class="tl is-promo"><div class="tl-card"><div class="tl-top"><span class="tl-date">Feb 2024</span><span class="tl-badge promo"><i class="fas fa-arrow-trend-up"></i> Promotion</span></div><h3>AI Engineering Lead</h3><span class="tl-co">Orange Innovation Hub</span><p>Led AI initiatives and ML projects. Managed a small team and shipped predictive models that fed product and business decisions.</p><div class="tags"><span>AI / ML</span><span>Predictive modeling</span><span>Team leadership</span></div></div></li>
+                    <li class="tl is-origin"><div class="tl-card"><div class="tl-top"><span class="tl-date">Dec 2023</span><span class="tl-badge">Where it started</span></div><h3>Data Scientist</h3><span class="tl-co">Orange Innovation Hub</span><p>Analyzed complex datasets, built predictive models and delivered insights that influenced business decisions.</p><div class="tags"><span>Data analysis</span><span>Machine learning</span><span>BI</span></div></div></li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="r-section" id="r-skills" data-title="Skills" data-sub="The toolkit I ship with">
+            <div class="sec-inner">
+                <div class="skills-grid">
+                    <article class="skill-card"><div class="skill-head"><i class="fas fa-code"></i><h3>Engineering</h3></div><ul class="meters"><li><span>Python</span><span class="meter"><span style="--w:95%"></span></span></li><li><span>Node.js</span><span class="meter"><span style="--w:90%"></span></span></li><li><span>SQL</span><span class="meter"><span style="--w:92%"></span></span></li><li><span>React.js</span><span class="meter"><span style="--w:85%"></span></span></li><li><span>System architecture</span><span class="meter"><span style="--w:88%"></span></span></li></ul></article>
+                    <article class="skill-card"><div class="skill-head"><i class="fas fa-diagram-project"></i><h3>Enterprise systems</h3></div><ul class="meters"><li><span>CRM platforms</span><span class="meter"><span style="--w:95%"></span></span></li><li><span>ERP platforms</span><span class="meter"><span style="--w:92%"></span></span></li><li><span>Central management</span><span class="meter"><span style="--w:90%"></span></span></li><li><span>API design</span><span class="meter"><span style="--w:88%"></span></span></li></ul></article>
+                    <article class="skill-card"><div class="skill-head"><i class="fas fa-brain"></i><h3>Data &amp; AI</h3></div><ul class="meters"><li><span>Data analysis</span><span class="meter"><span style="--w:95%"></span></span></li><li><span>Machine learning</span><span class="meter"><span style="--w:85%"></span></span></li><li><span>ETL &amp; pipelines</span><span class="meter"><span style="--w:88%"></span></span></li><li><span>Database design</span><span class="meter"><span style="--w:95%"></span></span></li><li><span>Snowflake</span><span class="meter"><span style="--w:80%"></span></span></li></ul></article>
+                    <article class="skill-card"><div class="skill-head"><i class="fas fa-cloud"></i><h3>Cloud &amp; infra</h3></div><ul class="meters"><li><span>Google Cloud</span><span class="meter"><span style="--w:92%"></span></span></li><li><span>Infrastructure design</span><span class="meter"><span style="--w:88%"></span></span></li><li><span>Deployment &amp; CI/CD</span><span class="meter"><span style="--w:90%"></span></span></li></ul></article>
+                    <article class="skill-card"><div class="skill-head"><i class="fas fa-users"></i><h3>Leadership</h3></div><ul class="meters"><li><span>Team leadership</span><span class="meter"><span style="--w:95%"></span></span></li><li><span>Hiring &amp; development</span><span class="meter"><span style="--w:90%"></span></span></li><li><span>Project management</span><span class="meter"><span style="--w:95%"></span></span></li><li><span>Strategic planning</span><span class="meter"><span style="--w:88%"></span></span></li></ul></article>
+                    <article class="skill-card"><div class="skill-head"><i class="fas fa-chart-line"></i><h3>Delivery</h3></div><ul class="meters"><li><span>Roadmap &amp; prioritization</span><span class="meter"><span style="--w:92%"></span></span></li><li><span>Cross-team alignment</span><span class="meter"><span style="--w:90%"></span></span></li><li><span>Stakeholder management</span><span class="meter"><span style="--w:88%"></span></span></li></ul></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="r-section" id="r-work" data-title="Selected work" data-sub="Systems the business runs on">
+            <div class="sec-inner">
+                <div class="work-grid">
+                    <article class="work-card feature"><div class="work-idx"><span>01</span><span>2024 — present</span></div><div class="work-ic"><i class="fas fa-diagram-project"></i></div><h3>Enterprise CRM Platform</h3><p>Led the build of a CRM serving <strong>50,000+ users</strong> — customer relationships, sales pipelines and cross-department workflows on a single source of truth.</p><div class="work-tech"><span>Python</span><span>Node.js</span><span>PostgreSQL</span><span>GCP</span></div></article>
+                    <article class="work-card"><div class="work-idx"><span>02</span><span>2024</span></div><div class="work-ic"><i class="fas fa-industry"></i></div><h3>Integrated ERP</h3><p>Unified finance, inventory, HR and operations — lifting business efficiency <strong>~60%</strong>.</p><div class="work-tech"><span>Python</span><span>React</span><span>MySQL</span></div></article>
+                    <article class="work-card"><div class="work-idx"><span>03</span><span>2024</span></div><div class="work-ic"><i class="fas fa-network-wired"></i></div><h3>Central Management System</h3><p>Real-time monitoring, reporting and control orchestrating operations across departments.</p><div class="work-tech"><span>Node.js</span><span>MongoDB</span><span>Redis</span></div></article>
+                    <article class="work-card"><div class="work-idx"><span>04</span><span>2024</span></div><div class="work-ic"><i class="fas fa-mobile-screen"></i></div><h3>Enterprise Mobile App</h3><p>Cross-platform app for <strong>10,000+ users</strong> with real-time sync and offline-first behavior.</p><div class="work-tech"><span>React Native</span><span>Node.js</span><span>MongoDB</span></div></article>
+                    <article class="work-card"><div class="work-idx"><span>05</span><span>2023</span></div><div class="work-ic"><i class="fas fa-robot"></i></div><h3>AI Predictive Models · Orange</h3><p>Predictive models that fed product and business decisions inside Orange's Innovation Hub.</p><div class="work-tech"><span>Python</span><span>scikit-learn</span><span>Pandas</span></div></article>
+                    <article class="work-card"><div class="work-idx"><span>06</span><span>2024</span></div><div class="work-ic"><i class="fas fa-cloud-arrow-up"></i></div><h3>Cloud Migration to GCP</h3><p>Migrated legacy systems to GCP — performance up <strong>~3×</strong>, cost down <strong>~40%</strong>.</p><div class="work-tech"><span>GCP</span><span>Kubernetes</span><span>Terraform</span></div></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="r-section" id="r-contact" data-title="Contact" data-sub="Let's build">
+            <div class="sec-inner">
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <p class="lede">I read everything that lands in my inbox. Whether it's a role, a partnership, or a hard systems problem — write to me.</p>
+                        <ul class="contact-list">
+                            <li><i class="fas fa-envelope"></i><div><span>Email</span><a href="mailto:serajbustanji02@gmail.com">serajbustanji02@gmail.com</a></div></li>
+                            <li><i class="fas fa-location-dot"></i><div><span>Based in</span>Amman, Jordan · open to remote</div></li>
+                            <li><i class="fas fa-briefcase"></i><div><span>Currently</span>Engineering Manager · Black Oasis</div></li>
+                        </ul>
+                        <div class="socials">
+                            <a href="https://github.com/seraj-bustanji" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                            <a href="mailto:serajbustanji02@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                    <form class="contact-form" novalidate>
+                        <div class="field-row">
+                            <div class="field"><label>Your name</label><input type="text" name="name" placeholder="Jane Doe" autocomplete="name" required></div>
+                            <div class="field"><label>Email</label><input type="email" name="email" placeholder="jane@company.com" autocomplete="email" required></div>
+                        </div>
+                        <div class="field"><label>Subject</label><input type="text" name="subject" placeholder="What's this about?"></div>
+                        <div class="field"><label>Message</label><textarea name="message" rows="5" placeholder="Tell me what you're working on…" required></textarea></div>
+                        <button type="submit" class="btn btn-primary btn-block"><span>Send message</span><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer class="r-footer">
+            <span>© <span id="year"></span> Seraj Albustanji. Built from scratch.</span>
+            <a href="#r-home">Back to top <i class="fas fa-arrow-up"></i></a>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="app.js" type="module"></script>
+    <script src="contact.js"></script>
 </body>
 </html>
