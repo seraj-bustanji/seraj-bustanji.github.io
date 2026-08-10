@@ -49,7 +49,7 @@ function boot() {
     camera.position.set(0, 6, 46);
 
     const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true; controls.dampingFactor = 0.06;
+    controls.enableDamping = true; controls.dampingFactor = 0.025;
     controls.enablePan = false; controls.minDistance = 3; controls.maxDistance = 260;
     controls.autoRotate = !reduce; controls.autoRotateSpeed = 0.26;
     controls.rotateSpeed = 0.62; controls.zoomSpeed = 1.5;
@@ -435,6 +435,7 @@ function boot() {
         setZoom: (v) => { controls.zoomSpeed = v; },
         setRange: (min, max) => { if (min != null) controls.minDistance = min; if (max != null) controls.maxDistance = max; },
         setFog: (dn) => { scene.fog.density = dn; },
+        setDamping: (v) => { controls.dampingFactor = v; },
     };
 
     let p = 0; const bar = document.getElementById("introBar");
