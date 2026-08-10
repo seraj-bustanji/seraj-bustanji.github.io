@@ -181,8 +181,8 @@ function boot() {
     const HUBS = [
         { id: "about",   label: "About",   drill: false, pos: [-17, 7, 3],   sats: ["Amman", "B.Sc.", "Award"] },
         { id: "journey", label: "Journey", drill: true,  pos: [15, 10, -7],  sats: ["Engineering Manager", "Engineering Lead", "Senior SWE", "Software Engineer", "AI Eng Lead", "Data Scientist"] },
-        { id: "skills",  label: "Skills",  drill: true,  pos: [19, -6, 8],    sats: ["Engineering", "Enterprise", "Data & AI", "Cloud", "Leadership", "Delivery"] },
-        { id: "work",    label: "Work",    drill: true,  pos: [-13, -10, -9], sats: ["Enterprise CRM", "Integrated ERP", "Central Mgmt", "Mobile App", "AI Models", "Cloud → GCP"] },
+        { id: "skills",  label: "Skills",  drill: true,  pos: [19, -6, 8],    sats: ["Languages", "Data & DBs", "Cloud & DevOps", "Architecture", "Data & AI", "Leadership"] },
+        { id: "work",    label: "Work",    drill: true,  pos: [-13, -10, -9], sats: ["ERP Platform", "Prodest Infra", "Lead Lifecycle", "SEO Engine", "R&D Workspace", "Locust AI"] },
         { id: "contact", label: "Contact", drill: false, pos: [-2, 15, 12],   sats: ["Email", "GitHub", "Remote"] },
     ];
 
