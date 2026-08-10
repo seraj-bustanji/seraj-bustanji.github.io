@@ -95,29 +95,30 @@ body.mode-readable::after { display: none; }
 }
 .node-label.hub {
     font-family: var(--font-display); font-size: .9rem; font-weight: 600; letter-spacing: 0;
-    color: var(--teal); padding: .5rem 1rem; pointer-events: auto; cursor: pointer;
-    background: rgba(8,22,20,.82); border: 1px solid rgba(94,234,212,.5);
-    box-shadow: 0 6px 24px -8px rgba(0,0,0,.7), 0 0 22px -6px var(--glow);
+    color: var(--lc, var(--teal)); padding: .5rem 1rem; pointer-events: auto; cursor: pointer;
+    background: rgba(6,9,15,.82); border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 6px 24px -8px rgba(0,0,0,.7), 0 0 20px -9px var(--lc, var(--glow));
 }
-.node-label.hub::after { content: " →"; color: var(--cyan); opacity: .7; }
-.node-label.hub:hover { color: #04211c; background: var(--teal); border-color: var(--teal); }
-.node-label.hub:hover::after { color: #04211c; }
+.node-label.hub::after { content: " →"; opacity: .55; }
+.node-label.hub:hover { color: #06110e; background: var(--lc, var(--teal)); border-color: var(--lc, var(--teal)); }
+.node-label.hub:hover::after { color: #06110e; }
 /* satellite labels — the sub-map items */
 .node-label.sat {
     font-family: var(--font-mono); font-size: .74rem; letter-spacing: 0;
-    color: var(--cyan); padding: .42rem .8rem; pointer-events: auto; cursor: pointer;
-    background: rgba(8,16,24,.82); border: 1px solid rgba(56,189,248,.42);
+    color: var(--lc, var(--cyan)); padding: .42rem .8rem; pointer-events: auto; cursor: pointer;
+    background: rgba(6,9,15,.82); border: 1px solid rgba(255,255,255,.14);
     box-shadow: 0 6px 20px -8px rgba(0,0,0,.7);
 }
-.node-label.sat::after { content: " →"; opacity: .55; }
-.node-label.sat:hover { color: #04211c; background: var(--cyan); border-color: var(--cyan); }
-.node-label.sat:hover::after { color: #04211c; }
+.node-label.sat::after { content: " →"; opacity: .5; }
+.node-label.sat:hover { color: #06110e; background: var(--lc, var(--cyan)); border-color: var(--lc, var(--cyan)); }
+.node-label.sat:hover::after { color: #06110e; }
 /* overview node — "Full career path" / "All skills" / "All projects" */
 .node-label.over {
     font-family: var(--font-display); font-size: .9rem; font-weight: 600; letter-spacing: 0;
-    color: #04211c; padding: .55rem 1.1rem; pointer-events: auto; cursor: pointer;
-    background: linear-gradient(120deg, var(--teal), var(--cyan)); border: 1px solid var(--teal);
-    box-shadow: 0 10px 30px -8px var(--glow), 0 0 26px -6px var(--glow);
+    color: #06110e; padding: .55rem 1.1rem; pointer-events: auto; cursor: pointer;
+    background: linear-gradient(120deg, var(--lc, var(--teal)), var(--lc2, var(--cyan)));
+    border: 1px solid var(--lc, var(--teal));
+    box-shadow: 0 10px 30px -8px rgba(0,0,0,.6), 0 0 26px -8px var(--lc, var(--glow));
 }
 .node-label.over::before { content: "\25ce\00a0"; }
 .node-label.over:hover { filter: brightness(1.08); }
